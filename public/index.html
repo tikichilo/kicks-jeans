@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Kicks & Jeans — Shoes & Denim, Delivered in Zambia</title>
+<meta name="description" content="Kicks & Jeans — sneakers and denim, delivered anywhere in Zambia. Pay by MTN or Airtel Mobile Money.">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="/" class="wordmark">KICKS <span class="amp">&amp;</span> JEANS</a>
+    <nav class="nav-links">
+      <a href="/#shoes">Shoes</a>
+      <a href="/#jeans">Jeans</a>
+      <a href="/track">Track Order</a>
+    </nav>
+    <button class="cart-btn" id="openCartBtn" aria-label="Open cart">
+      Cart <span class="cart-count" data-cart-count style="display:none">0</span>
+    </button>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <h1 class="hero-title display">
+      STEP UP<br>
+      <span class="line2">FIT DOWN.</span>
+    </h1>
+    <p class="hero-sub">Fresh kicks and denim, dropped at your door anywhere in Zambia. Pay straight from your phone — MTN or Airtel Money.</p>
+    <div class="hero-meta">
+      <span>Nationwide delivery</span>
+      <span>MoMo checkout</span>
+      <span>New drops weekly</span>
+    </div>
+  </div>
+</section>
+
+<div class="chip-row" id="chipRow">
+  <button class="chip active" data-filter="all" aria-pressed="true">All</button>
+  <button class="chip" data-filter="shoes" aria-pressed="false">Shoes</button>
+  <button class="chip" data-filter="jeans" aria-pressed="false">Jeans</button>
+</div>
+<div class="chip-row audience-row" id="audienceRow" role="group" aria-label="Filter by audience">
+  <button class="chip active" data-audience-filter="all" aria-pressed="true">All styles</button>
+  <button class="chip" data-audience-filter="men" aria-pressed="false">Men's</button>
+  <button class="chip" data-audience-filter="women" aria-pressed="false">Women's</button>
+  <button class="chip" data-audience-filter="unisex" aria-pressed="false">Unisex</button>
+</div>
+
+<main>
+  <div class="grid" id="productGrid">
+    <!-- product cards injected here -->
+  </div>
+</main>
+
+<footer class="footer">
+  Kicks & Jeans · Delivering across Zambia · Payments via MTN &amp; Airtel Mobile Money · <a href="/admin">Admin</a>
+</footer>
+
+<div class="welcome-overlay" id="welcomeOverlay" hidden>
+  <section class="welcome-panel" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle" aria-describedby="welcomeCopy">
+    <button class="welcome-close" id="welcomeClose" type="button" aria-label="Close welcome message">&times;</button>
+    <p class="welcome-kicker">KICKS &amp; JEANS / FIRST LOOK</p>
+    <h2 id="welcomeTitle">Welcome to the rotation.</h2>
+    <p id="welcomeCopy" class="welcome-copy">Find your next everyday pair and the denim that goes with it. Fresh drops land weekly, with delivery across Zambia.</p>
+    <div class="welcome-details">
+      <span>New drops weekly</span>
+      <span>MTN &amp; Airtel Money</span>
+      <span>Nationwide delivery</span>
+    </div>
+    <button class="welcome-primary" id="welcomeShop" type="button">Explore the collection</button>
+    <button class="welcome-dismiss" id="welcomeDismiss" type="button">Maybe later</button>
+  </section>
+</div>
+
+<!-- Quick add sheet -->
+<div class="sheet-backdrop" id="sheetBackdrop"></div>
+<div class="sheet" id="quickAddSheet">
+  <button class="sheet-close" id="sheetClose" aria-label="Close">&times;</button>
+  <div id="sheetContent"></div>
+</div>
+
+<!-- Cart drawer -->
+<div class="drawer" id="cartDrawer" aria-label="Shopping cart">
+  <div class="drawer-header">
+    <h2 style="font-size:16px;text-transform:uppercase;">Your Cart</h2>
+    <button class="sheet-close" id="drawerClose" aria-label="Close cart">&times;</button>
+  </div>
+  <div class="drawer-items" id="drawerItems"></div>
+  <div class="drawer-footer" id="drawerFooter"></div>
+</div>
+
+<!-- Sticky mobile cart bar -->
+<div class="cart-bar" id="cartBar">
+  <div>
+    <div style="font-size:11px;text-transform:uppercase;opacity:.7;" id="cartBarCount"></div>
+    <div class="cart-bar-total" data-cart-bar-total>K0</div>
+  </div>
+  <button class="cart-bar-btn" id="cartBarBtn">View Cart</button>
+</div>
+
+<script src="/js/cart.js"></script>
+<script src="/js/store.js"></script>
+</body>
+</html>

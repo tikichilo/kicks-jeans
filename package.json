@@ -1,0 +1,26 @@
+{
+  "name": "kicks-and-jeans",
+  "version": "1.0.0",
+  "description": "Kicks & Jeans — shoes & jeans store with cart, checkout, MTN/Airtel MoMo payment, and order tracking. Zambia delivery.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "seed": "node seed.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "cloudinary": "^2.11.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^8.7.0",
+    "helmet": "^8.3.0",
+    "mongoose": "^8.5.0",
+    "multer": "^2.4.0",
+    "nanoid": "^3.3.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}

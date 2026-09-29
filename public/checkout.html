@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Checkout — Kicks & Jeans</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="/" class="wordmark">KICKS <span class="amp">&amp;</span> JEANS</a>
+    <nav class="nav-links">
+      <a href="/">Store</a>
+      <a href="/track">Track Order</a>
+    </nav>
+    <div></div>
+  </div>
+</header>
+
+<main class="container checkout-page">
+
+  <!-- Step 1: cart summary -->
+  <section id="cartSummarySection">
+    <h2 style="text-transform:uppercase;font-size:20px;">Your Order</h2>
+    <div id="checkoutItems" style="margin-top:12px;" aria-live="polite"></div>
+    <div id="emptyCartNote" class="empty-note" style="display:none;">
+      Your cart is empty. <a href="/" style="color:var(--denim-mid);font-weight:700;">Go shop.</a>
+    </div>
+  </section>
+
+  <!-- Step 2: delivery details -->
+  <form id="checkoutForm">
+    <section class="form-section" style="padding-left:0;padding-right:0;">
+      <h2>Delivery Details</h2>
+      <div class="field">
+        <label for="name">Full name</label>
+        <input type="text" id="name" required>
+      </div>
+      <div class="field">
+        <label for="phone">Phone number (for delivery)</label>
+        <input type="tel" id="phone" placeholder="097XXXXXXX" required>
+      </div>
+      <div class="field">
+        <label for="email">Email (optional)</label>
+        <input type="email" id="email">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="province">Province</label>
+          <select id="province" required></select>
+        </div>
+        <div class="field">
+          <label for="town">Town / area</label>
+          <input type="text" id="town" placeholder="e.g. Kabulonga" required>
+        </div>
+      </div>
+      <div class="field">
+        <label for="address">Delivery address</label>
+        <input type="text" id="address" placeholder="Street, house number / landmark" required>
+      </div>
+      <div class="field" id="expressField" style="display:none;">
+        <label style="display:flex;align-items:center;gap:8px;text-transform:none;font-weight:500;font-size:14px;color:var(--ink);">
+          <input type="checkbox" id="express" style="width:auto;"> Express delivery within Lusaka (+K25)
+        </label>
+      </div>
+    </section>
+
+    <section class="form-section" style="padding-left:0;padding-right:0;">
+      <h2>Pay with Mobile Money</h2>
+      <div class="provider-pick" id="providerPick">
+        <button type="button" class="provider-card" data-provider="mtn" aria-pressed="false">MTN Money</button>
+        <button type="button" class="provider-card" data-provider="airtel" aria-pressed="false">Airtel Money</button>
+      </div>
+      <div class="field" style="margin-top:14px;">
+        <label for="momoPhone">Mobile Money number</label>
+        <input type="tel" id="momoPhone" placeholder="097XXXXXXX" required>
+        <div class="helper-text">You'll get a prompt on this number to approve payment.</div>
+      </div>
+    </section>
+
+    <section class="form-section" style="padding-left:0;padding-right:0;">
+      <div class="summary-row"><span>Subtotal</span><span id="sumSubtotal">K0</span></div>
+      <div class="summary-row"><span>Delivery</span><span id="sumDelivery">Select province</span></div>
+      <div class="summary-row total"><span>Total</span><span id="sumTotal">K0</span></div>
+      <div class="error-text" id="formError" style="display:none;"></div>
+      <button type="submit" class="btn-primary" id="payBtn">Pay Now</button>
+    </section>
+  </form>
+
+</main>
+
+<!-- Payment waiting overlay -->
+<div class="sheet-backdrop" id="payBackdrop"></div>
+<div class="sheet" id="payStatusSheet" style="text-align:center;">
+  <div id="payStatusContent" style="padding:20px 6px 10px;"></div>
+</div>
+
+<footer class="footer">
+  Kicks & Jeans · Delivering across Zambia · Payments via MTN &amp; Airtel Mobile Money · <a href="/admin">Admin</a>
+</footer>
+
+<script src="/js/cart.js"></script>
+<script src="/js/checkout.js"></script>
+</body>
+</html>

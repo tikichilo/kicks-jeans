@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Track Your Order — Kicks & Jeans</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="/" class="wordmark">KICKS <span class="amp">&amp;</span> JEANS</a>
+    <nav class="nav-links">
+      <a href="/">Store</a>
+    </nav>
+    <div></div>
+  </div>
+</header>
+
+<main class="container track-page">
+  <h1>Track Your Order</h1>
+  <p class="track-intro">Enter your order code and the phone number used at checkout.</p>
+
+  <form id="trackForm" class="track-form">
+    <div class="field">
+      <label for="orderCode">Order code</label>
+      <input type="text" id="orderCode" placeholder="KJ-XXXXXX" required autocomplete="off" autocapitalize="characters" style="text-transform:uppercase;">
+    </div>
+    <div class="field">
+      <label for="orderPhone">Phone number</label>
+      <input type="tel" id="orderPhone" placeholder="097XXXXXXX" required autocomplete="tel">
+    </div>
+    <div class="error-text" id="trackError" style="display:none;"></div>
+    <button type="submit" class="btn-primary" id="trackBtn">Track Order</button>
+  </form>
+
+  <div id="orderResult" aria-live="polite"></div>
+</main>
+
+<footer class="footer">
+  Kicks & Jeans · Delivering across Zambia · Payments via MTN &amp; Airtel Mobile Money · <a href="/admin">Admin</a>
+</footer>
+
+<script src="/js/track.js"></script>
+</body>
+</html>

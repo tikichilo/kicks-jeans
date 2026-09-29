@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Admin Dashboard — Kicks & Jeans</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="/" class="wordmark">KICKS <span class="amp">&amp;</span> JEANS</a>
+    <nav class="nav-links"><a href="/">Public store</a></nav>
+    <div></div>
+  </div>
+</header>
+
+<main class="container admin-page">
+  <section id="adminAuth" class="admin-auth" hidden>
+    <p class="admin-kicker">Kicks &amp; Jeans / Operations</p>
+    <h1>Admin Access</h1>
+    <div class="admin-tabs" role="tablist" aria-label="Admin account access">
+      <button type="button" class="admin-tab active" data-auth-mode="login" role="tab" aria-selected="true">Sign in</button>
+      <button type="button" class="admin-tab" data-auth-mode="signup" role="tab" aria-selected="false">Create account</button>
+    </div>
+    <form id="adminLoginForm" class="admin-auth-form">
+      <div class="field"><label for="loginEmail">Email</label><input id="loginEmail" type="email" autocomplete="username" required></div>
+      <div class="field"><label for="loginPassword">Password</label><input id="loginPassword" type="password" autocomplete="current-password" required></div>
+      <div class="error-text" data-auth-error hidden></div>
+      <button class="btn-primary" type="submit">Sign in</button>
+    </form>
+    <form id="adminSignupForm" class="admin-auth-form" hidden>
+      <div class="field"><label for="signupName">Name</label><input id="signupName" autocomplete="name" maxlength="80" required></div>
+      <div class="field"><label for="signupEmail">Email</label><input id="signupEmail" type="email" autocomplete="email" required></div>
+      <div class="field"><label for="signupPassword">Password</label><input id="signupPassword" type="password" autocomplete="new-password" minlength="12" required><p class="helper-text">Use at least 12 characters.</p></div>
+      <div class="field"><label for="inviteCode">Invite code</label><input id="inviteCode" type="password" autocomplete="off" required></div>
+      <div class="error-text" data-auth-error hidden></div>
+      <button class="btn-primary" type="submit">Create admin account</button>
+    </form>
+  </section>
+
+  <section id="adminDashboard" hidden>
+    <div class="admin-heading">
+      <div>
+        <p class="admin-kicker">Kicks &amp; Jeans / Operations</p>
+        <h1>Order Desk</h1>
+        <p class="admin-welcome" id="adminWelcome"></p>
+      </div>
+      <div class="admin-actions">
+        <button type="button" class="admin-secondary" id="refreshOrders" aria-label="Refresh orders">Refresh</button>
+        <button type="button" class="admin-secondary" id="adminLogout">Sign out</button>
+      </div>
+    </div>
+
+    <nav class="admin-workspace-tabs" aria-label="Admin workspace">
+      <button type="button" class="admin-workspace-tab active" data-dashboard-view="orders" aria-pressed="true">Orders</button>
+      <button type="button" class="admin-workspace-tab" data-dashboard-view="products" aria-pressed="false">Products</button>
+    </nav>
+
+    <section id="ordersView">
+    <div class="admin-filters">
+      <div class="field"><label for="orderSearch">Search orders</label><input type="search" id="orderSearch" placeholder="Order code, customer, town"></div>
+      <div class="field"><label for="statusFilter">Status</label><select id="statusFilter">
+        <option value="all">All statuses</option>
+        <option value="pending_payment">Awaiting payment</option>
+        <option value="processing">Processing</option>
+        <option value="shipped">Shipped</option>
+        <option value="out_for_delivery">Out for delivery</option>
+        <option value="delivered">Delivered</option>
+        <option value="cancelled">Cancelled</option>
+      </select></div>
+    </div>
+    <div id="adminNotice" class="admin-notice" role="status" hidden></div>
+    <div id="adminOrders" class="admin-orders" aria-live="polite"></div>
+    </section>
+
+    <section id="productsView" hidden>
+      <div class="products-heading">
+        <div><p class="admin-kicker">Inventory / Catalog</p><h2>Products</h2></div>
+        <button type="button" class="admin-secondary" id="refreshProducts">Refresh products</button>
+      </div>
+      <div id="productNotice" class="admin-notice" role="status" hidden></div>
+      <form id="productForm" class="product-form" enctype="multipart/form-data">
+        <h3>Add a product</h3>
+        <div class="product-form-grid">
+          <div class="field"><label for="productName">Product name</label><input id="productName" name="name" maxlength="120" required></div>
+          <div class="field"><label for="productCategory">Category</label><select id="productCategory" name="category" required><option value="shoes">Shoes</option><option value="jeans">Jeans</option></select></div>
+          <div class="field"><label for="productAudience">Audience</label><select id="productAudience" name="audience" required><option value="men">Men's</option><option value="women">Women's</option><option value="unisex" selected>Unisex</option></select></div>
+          <div class="field"><label for="productPrice">Price (ZMW)</label><input id="productPrice" name="price" type="number" min="0.01" step="0.01" required></div>
+          <div class="field"><label for="productSizes">Sizes</label><input id="productSizes" name="sizes" placeholder="e.g. 7, 8, 9 or S, M, L"><p class="helper-text">Separate sizes with commas.</p></div>
+          <div class="field"><label for="productColors">Colours</label><input id="productColors" name="colors" placeholder="e.g. Black, Blue"><p class="helper-text">Separate colours with commas.</p></div>
+          <div class="field product-image-field"><label for="productImage">Product photo</label><input id="productImage" name="images" type="file" accept="image/jpeg,image/png,image/webp" required><p class="helper-text">Choose a JPG, PNG or WEBP photo, up to 5 MB.</p><p id="productImageMode" class="product-image-mode">Uploaded photos publish directly.</p><div id="productImagePreviews" class="product-image-previews" aria-live="polite"></div></div>
+          <div class="field product-description-field"><label for="productDescription">Description</label><textarea id="productDescription" name="description" maxlength="500" rows="3"></textarea></div>
+        </div>
+        <div class="product-options">
+          <label><input type="checkbox" name="featured" value="true"> Feature this item</label>
+          <label><input type="checkbox" name="inStock" value="true" checked> Available to buy</label>
+        </div>
+        <div class="product-form-actions">
+          <button class="btn-primary product-submit" type="submit">Upload &amp; add product</button>
+          <button class="admin-secondary" id="cancelProductEdit" type="button" hidden>Cancel edit</button>
+        </div>
+      </form>
+      <div class="products-list-heading"><h3>Current catalog</h3><input type="search" id="productSearch" aria-label="Search products" placeholder="Search products"></div>
+      <div id="adminProducts" class="admin-products" aria-live="polite"></div>
+    </section>
+  </section>
+</main>
+
+<footer class="footer">Kicks &amp; Jeans · Admin operations</footer>
+<script src="/js/admin.js"></script>
+</body>
+</html>
