@@ -2,10 +2,26 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Kicks & Jeans — Shoes & Denim, Delivered in Zambia</title>
-<meta name="description" content="Kicks & Jeans — sneakers and denim, delivered anywhere in Zambia. Pay by MTN or Airtel Mobile Money.">
-<link rel="stylesheet" href="/css/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<meta name="description" content="{{DESCRIPTION}}">
+<link rel="canonical" href="{{PAGE_URL}}">
+<meta name="theme-color" content="#1F3768">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="google-site-verification" content="{{GOOGLE_SITE_VERIFICATION}}">
+<meta property="og:title" content="{{TITLE}}">
+<meta property="og:description" content="{{DESCRIPTION}}">
+<meta property="og:image" content="{{OG_IMAGE_URL}}">
+<meta property="og:url" content="{{PAGE_URL}}">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_ZM">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{TITLE}}">
+<meta name="twitter:description" content="{{DESCRIPTION}}">
+<meta name="twitter:image" content="{{OG_IMAGE_URL}}">
+<meta name="twitter:url" content="{{PAGE_URL}}">
+<link rel="stylesheet" href="/css/style.css?v=2">
+<script type="application/ld+json">{{STRUCTURED_DATA}}</script>
 </head>
 <body>
 
@@ -25,11 +41,8 @@
 
 <section class="hero">
   <div class="container">
-    <h1 class="hero-title display">
-      STEP UP<br>
-      <span class="line2">FIT DOWN.</span>
-    </h1>
-    <p class="hero-sub">Fresh kicks and denim, dropped at your door anywhere in Zambia. Pay straight from your phone — MTN or Airtel Money.</p>
+    <h1 class="hero-title seo-title display">Zambia's Freshest Jeans &amp; Kicks, Delivered to Your Door.</h1>
+    <p class="hero-sub">Shop trending jeans and sneakers. Pay with MTN or Airtel Money. Nationwide delivery.</p>
     <div class="hero-meta">
       <span>Nationwide delivery</span>
       <span>MoMo checkout</span>
@@ -52,8 +65,13 @@
 
 <main>
   <div class="grid" id="productGrid">
-    <!-- product cards injected here -->
+    {{PRODUCT_CARDS}}
   </div>
+  <script type="application/json" id="initialProducts">{{PRODUCT_DATA}}</script>
+  <section class="container delivery-payment">
+    <h2>Delivery &amp; Payment</h2>
+    <p>Shop jeans and shoes from anywhere in Zambia with nationwide delivery to Lusaka, Kitwe, Ndola, Livingstone and other towns. Pay for your order using MTN Money or Airtel Money in ZMW.</p>
+  </section>
 </main>
 
 <footer class="footer">
@@ -102,7 +120,7 @@
   <button class="cart-bar-btn" id="cartBarBtn">View Cart</button>
 </div>
 
-<script src="/js/cart.js"></script>
-<script src="/js/store.js"></script>
+<script src="/js/cart.js" defer></script>
+<script src="/js/store.js" defer></script>
 </body>
 </html>

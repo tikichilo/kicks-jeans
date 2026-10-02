@@ -15,8 +15,7 @@ function confirmPayment(order) {
   }
 }
 
-// POST /api/payment/initiate  { orderId }
-router.post('/initiate', limitPaymentStarts, async (req, res) => {
+async function preparePayment(req, res, next) {
   try {
     const { orderId } = req.body;
     const order = await Order.findById(orderId);
@@ -39,6 +38,16 @@ router.post('/initiate', limitPaymentStarts, async (req, res) => {
       order.payment.status = 'failed';
     }
 
+    res.locals.paymentOrder = order;
+    next();
+  } catch (err) {
+    res.status(err.status || 500).json({ error: err.message });
+  }
+}
+
+async function startPayment(req, res) {
+  try {
+    const order = res.locals.paymentOrder;
     const result = await momo.initiatePayment({
       provider: order.payment.provider,
       phone: order.payment.phone,
@@ -47,14 +56,17 @@ router.post('/initiate', limitPaymentStarts, async (req, res) => {
     });
 
     order.payment.providerRef = result.depositId;
-  order.payment.status = 'pending';
+    order.payment.status = 'pending';
     await order.save();
 
     res.json({ orderCode: order.orderCode, depositId: result.depositId, mode: result.mode });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(err.status || 500).json({ error: err.message });
   }
-});
+}
+
+// POST /api/payment/initiate  { orderId }
+router.post('/initiate', preparePayment, limitPaymentStarts, startPayment);
 
 // GET /api/payment/status/:orderId — frontend polls this while waiting for
 // the customer to approve the MoMo prompt on their phone

@@ -28,6 +28,21 @@ npm run dev       # http://localhost:3000
 Run `npm test` before deployment. For local payment-flow testing, set
 `PAYMENT_MODE=mock`; simulated payments are unavailable in production.
 
+## Search and social previews
+
+The store page renders product cards and Product structured data on the server.
+Set `SITE_URL` to the public site origin (defaults to
+`https://kicksandjeans.co.zm`), `OG_IMAGE_URL` to an absolute social preview image
+URL (defaults to `/og-image.svg` on that domain), and
+`GOOGLE_SITE_VERIFICATION` to the token supplied by Search Console. Category and
+product detail pages do not currently exist, so the sitemap lists the real store
+URL only; add dedicated canonical pages before publishing those URLs in a
+sitemap.
+
+Product images hosted outside the repository should be converted before upload.
+For local JPG/PNG assets, install Sharp with `npm install --save-dev sharp` and
+run `node scripts/convert-images-to-webp.js <source-directory> [output-directory]`.
+
 ## Payments — MTN & Airtel Mobile Money
 
 `services/momo.js` uses **pawaPay** (https://pawapay.io) as the aggregator —

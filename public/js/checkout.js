@@ -35,7 +35,7 @@ function renderCheckoutItems() {
   emptyCartNote.style.display = 'none';
   checkoutItems.innerHTML = cart.map(item => `
     <div class="drawer-item">
-      <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}">
+      <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" width="64" height="64" loading="lazy" decoding="async">
       <div class="drawer-item-info">
         <div class="drawer-item-name">${escapeHtml(item.name)}</div>
         <div class="drawer-item-meta">${escapeHtml([item.size, item.color].filter(Boolean).join(' / ') || 'Standard')} · K${item.price}</div>

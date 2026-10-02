@@ -35,13 +35,20 @@ test('mock payments require an explicit non-production setting', () => {
   assert.match(production.stderr, /Mock payments are disabled in production/);
 });
 
-test('production requires live credentials and a non-sandbox URL', () => {
+test('production requires live credentials and uses a non-sandbox URL', () => {
   const missingToken = runNode("require('./services/momo')", {
     NODE_ENV: 'production',
     PAWAPAY_BASE_URL: 'https://api.pawapay.io'
   });
   assert.notEqual(missingToken.status, 0);
   assert.match(missingToken.stderr, /PAWAPAY_API_TOKEN is required in production/);
+
+  const defaultProductionUrl = runNode("process.stdout.write(require('./services/momo').MODE)", {
+    NODE_ENV: 'production',
+    PAWAPAY_API_TOKEN: 'test-token'
+  });
+  assert.equal(defaultProductionUrl.status, 0, defaultProductionUrl.stderr);
+  assert.equal(defaultProductionUrl.stdout, 'live');
 
   const sandbox = runNode("require('./services/momo')", {
     NODE_ENV: 'production',

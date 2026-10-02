@@ -66,6 +66,17 @@ setTimeout(showWelcomeOnce, 350);
 
 async function loadProducts() {
   try {
+    const initialProducts = JSON.parse(document.getElementById('initialProducts').textContent);
+    if (Array.isArray(initialProducts)) {
+      allProducts = initialProducts;
+      renderGrid();
+      return;
+    }
+  } catch {
+    // Fall back to the products API if server-rendered product data is unavailable.
+  }
+
+  try {
     const res = await fetch('/api/products');
     const products = await res.json();
     if (!res.ok || !Array.isArray(products)) throw new Error('Products are temporarily unavailable.');
@@ -87,10 +98,10 @@ function renderGrid() {
     return;
   }
   grid.innerHTML = items.map(p => `
-    <div class="card">
+    <article class="card" id="product-${escapeHtml(p._id)}">
       <div class="card-img-wrap">
         ${p.featured ? '<span class="card-badge">New</span>' : ''}
-        <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" loading="lazy">
+        <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" width="600" height="600" loading="lazy" decoding="async">
       </div>
       <div class="card-body">
         <div class="card-name">${escapeHtml(p.name)}</div>
@@ -100,7 +111,7 @@ function renderGrid() {
           <button class="add-btn" data-id="${escapeHtml(p._id)}" aria-label="Add ${escapeHtml(p.name)} to cart" ${p.inStock ? '' : 'disabled'}>${p.inStock ? '+' : '×'}</button>
         </div>
       </div>
-    </div>
+    </article>
   `).join('');
 
   grid.querySelectorAll('.card-img-wrap img').forEach(image => {
@@ -178,7 +189,7 @@ function renderSheet() {
   const p = sheetProduct;
   sheetContent.innerHTML = `
     <div style="display:flex;gap:14px;margin-top:4px;">
-      <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" style="width:88px;height:88px;object-fit:cover;border:2px solid var(--ink);">
+      <img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" width="88" height="88" loading="lazy" decoding="async" style="object-fit:cover;border:2px solid var(--ink);">
       <div>
         <div style="font-weight:700;font-size:16px;">${escapeHtml(p.name)}</div>
         <div class="price-tag" style="margin-top:4px;">${p.price}</div>
@@ -256,7 +267,7 @@ function renderDrawer() {
   }
   drawerItems.innerHTML = cart.map(item => `
     <div class="drawer-item">
-      <img src="${item.image}" alt="${item.name}">
+      <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" width="64" height="64" loading="lazy" decoding="async">
       <div class="drawer-item-info">
         <div class="drawer-item-name">${escapeHtml(item.name)}</div>
         <div class="drawer-item-meta">${escapeHtml([item.size, item.color].filter(Boolean).join(' / ') || 'Standard')} · K${item.price}</div>

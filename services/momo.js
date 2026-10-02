@@ -30,10 +30,14 @@ if (requestedMode === 'live' && !hasApiToken) {
 }
 
 const MODE = requestedMode === 'mock' ? 'mock' : hasApiToken ? 'live' : 'unconfigured';
-const BASE_URL = process.env.PAWAPAY_BASE_URL || 'https://api.sandbox.pawapay.io';
+const BASE_URL = process.env.PAWAPAY_BASE_URL || (
+  process.env.NODE_ENV === 'production'
+    ? 'https://api.pawapay.io'
+    : 'https://api.sandbox.pawapay.io'
+);
 
 if (process.env.NODE_ENV === 'production' &&
-  (!process.env.PAWAPAY_BASE_URL || /sandbox/i.test(BASE_URL))) {
+  /sandbox/i.test(BASE_URL)) {
   throw new Error('Set PAWAPAY_BASE_URL to the pawaPay production URL in production.');
 }
 
