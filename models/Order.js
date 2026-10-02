@@ -39,6 +39,14 @@ const orderSchema = new mongoose.Schema({
     providerRef: { type: String }
   },
 
+  receipt: {
+    status: { type: String, enum: ['pending', 'sending', 'sent', 'failed'], default: 'pending' },
+    attempts: { type: Number, default: 0 },
+    lastAttemptAt: { type: Date },
+    sentAt: { type: Date },
+    error: { type: String }
+  },
+
   status: {
     type: String,
     enum: ['pending_payment', 'processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled'],

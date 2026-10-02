@@ -3,6 +3,7 @@ const { after, test } = require('node:test');
 const assert = require('node:assert/strict');
 const Order = require('../models/Order');
 const momo = require('../services/momo');
+const orderReceipt = require('../services/orderReceipt');
 const paymentRoutes = require('../routes/payment');
 
 let providerStatus = 'PENDING';
@@ -71,4 +72,22 @@ test('the start limit still applies to fresh provider payment attempts', async (
   const limited = await initiate('203.0.113.2');
   assert.equal(limited.status, 429);
   assert.equal(startedPayments, 8);
+});
+
+test('confirmed payment status triggers the customer receipt', async () => {
+  order.payment.status = 'pending';
+  order.payment.providerRef = 'deposit-completed';
+  order.customer = { phone: '260971000000', email: 'customer@example.com' };
+  momo.checkStatus = async () => ({ status: 'COMPLETED' });
+  orderReceipt.sendReceipt = async () => 'sent';
+
+  const response = await fetch(`${endpoint.replace('/initiate', '')}/status/${order._id}`, {
+    headers: { 'X-Forwarded-For': '192.0.2.40' }
+  });
+  const result = await response.json();
+
+  assert.equal(response.status, 200);
+  assert.equal(result.status, 'paid');
+  assert.equal(result.receiptStatus, 'sent');
+  assert.equal(order.payment.status, 'paid');
 });

@@ -94,9 +94,15 @@ router.post('/', limitOrders, async (req, res) => {
     if (!customer || !customer.name || !customer.phone || !customer.province || !customer.town || !customer.address) {
       return res.status(400).json({ error: 'Missing delivery details' });
     }
+    if (typeof customer.email !== 'string' ||
+      customer.email.length > 254 ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customer.email.trim())) {
+      return res.status(400).json({ error: 'Enter a valid email address to receive your receipt' });
+    }
     if (!payment || !['mtn', 'airtel'].includes(payment.provider) || !payment.phone) {
       return res.status(400).json({ error: 'Missing payment details' });
     }
+    const customerDetails = { ...customer, email: customer.email.trim().toLowerCase() };
 
     let deliveryFee;
     try {
@@ -136,7 +142,7 @@ router.post('/', limitOrders, async (req, res) => {
       subtotal,
       deliveryFee,
       total,
-      customer,
+      customer: customerDetails,
       payment: {
         method: 'momo',
         provider: payment.provider,

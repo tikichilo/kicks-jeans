@@ -62,6 +62,17 @@ sandbox URLs and simulated payments are rejected at startup. Provider callbacks
 are treated as notifications and verified against pawaPay before an order is
 marked paid.
 
+### Customer email receipts
+
+Checkout requires a valid customer email. After pawaPay confirms payment, the
+customer receives an itemized receipt with their order number, items, ZMW totals,
+payment method, and delivery address. Configure SMTP in the deployment
+environment with `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, and `SMTP_PASS`; set
+`EMAIL_FROM` to the sender address (it defaults to `SMTP_USER`). In production,
+the app refuses to start without SMTP settings. Receipt delivery failures are
+logged and recorded on the order, and failed sends can be retried on a later
+payment status check after a five-minute delay.
+
 If you'd rather integrate MTN and Airtel directly instead of through an
 aggregator, `services/momo.js` is the only file that needs to change —
 `initiatePayment()` / `checkStatus()` are the two functions the rest of the
@@ -81,6 +92,11 @@ trusted staff; anyone with it can create an admin account. The dashboard is at
 `/admin`; sessions are signed, HTTP-only cookies that expire after eight
 hours. Rotate the invite code after onboarding if you want to close account
 creation.
+
+The admin sign-in screen includes password recovery. Set `GMAIL_USER` to the
+Gmail sender address and `GMAIL_PASS` to a Google App Password in the deployment
+environment. Reset links are single-use and expire after 30 minutes; the reset
+request response does not reveal whether an admin email exists.
 
 Admin users can advance orders through the dashboard. Only the next valid
 fulfillment status is accepted; shipping requires a courier and tracking

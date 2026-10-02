@@ -45,6 +45,21 @@
       <div class="field"><label for="loginPassword">Password</label><input id="loginPassword" type="password" autocomplete="current-password" required></div>
       <div class="error-text" data-auth-error hidden></div>
       <button class="btn-primary" type="submit">Sign in</button>
+      <button class="admin-secondary" id="showForgotPassword" type="button" style="margin-top:12px;">Forgot password?</button>
+    </form>
+    <form id="forgotPasswordForm" class="admin-auth-form" hidden>
+      <p>Enter your admin email address and we’ll send a password reset link if an account exists.</p>
+      <div class="field"><label for="forgotEmail">Admin email</label><input id="forgotEmail" type="email" autocomplete="email" required></div>
+      <div class="error-text" data-auth-error hidden></div>
+      <button class="btn-primary" type="submit">Send reset link</button>
+      <button class="admin-secondary" id="backToLogin" type="button" style="margin-top:12px;">Back to sign in</button>
+    </form>
+    <form id="resetPasswordForm" class="admin-auth-form" hidden>
+      <p>Choose a new password for your admin account.</p>
+      <div class="field"><label for="resetPassword">New password</label><input id="resetPassword" type="password" autocomplete="new-password" minlength="12" maxlength="200" required><p class="helper-text">Use at least 12 characters.</p></div>
+      <div class="field"><label for="confirmResetPassword">Confirm new password</label><input id="confirmResetPassword" type="password" autocomplete="new-password" minlength="12" maxlength="200" required></div>
+      <div class="error-text" data-auth-error hidden></div>
+      <button class="btn-primary" type="submit">Update password</button>
     </form>
     <form id="adminSignupForm" class="admin-auth-form" hidden>
       <div class="field"><label for="signupName">Name</label><input id="signupName" autocomplete="name" maxlength="80" required></div>
@@ -125,6 +140,6 @@
 </main>
 
 <footer class="footer">Kicks &amp; Jeans · Admin operations</footer>
-<script src="/js/admin.js" defer></script>
+<script src="/js/admin.js?v=2" defer></script>
 </body>
 </html>

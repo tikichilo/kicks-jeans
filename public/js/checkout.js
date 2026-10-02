@@ -233,7 +233,11 @@ async function pollPaymentStatus(order) {
       clearTimeout(paymentPollTimer);
       clearCart();
       activeOrder = null;
-      showPaymentOverlay('success', data.order);
+      showPaymentOverlay('success', {
+        ...data.order,
+        customer: { email: order.customer.email },
+        receiptStatus: data.receiptStatus
+      });
       return;
     }
     if (data.status === 'failed') {
@@ -272,10 +276,16 @@ function showPaymentOverlay(state, order, detail = '') {
       <p class="helper-text">Keep this page open while payment is confirmed.</p>
     `;
   } else if (state === 'success') {
+    const receiptMessage = order.receiptStatus === 'sent'
+      ? `Your receipt was emailed to <strong>${escapeHtml(order.customer.email)}</strong>.`
+      : order.receiptStatus === 'failed'
+        ? 'Payment succeeded, but the receipt email could not be sent. Please keep your order number.'
+        : `Your receipt is being prepared for <strong>${escapeHtml(order.customer.email)}</strong>.`;
     content.innerHTML = `
       <h2 style="text-transform:uppercase;font-size:18px;color:var(--denim-mid);">Payment received</h2>
       <p style="margin-top:10px;color:var(--ink-soft);font-size:14px;">Your order is confirmed and heading into processing.</p>
       <div class="order-code" style="margin-top:16px;">${escapeHtml(order.orderCode)}</div>
+      <p style="margin-top:10px;color:var(--ink-soft);font-size:14px;">${receiptMessage}</p>
       <a class="btn-primary" style="display:block;text-align:center;margin-top:18px;"
         href="/track?code=${encodeURIComponent(order.orderCode)}">Track Order</a>
     `;

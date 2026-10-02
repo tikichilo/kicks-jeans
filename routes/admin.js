@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const { promisify } = require('util');
 const Admin = require('../models/Admin');
 const Order = require('../models/Order');
+const { sendPasswordResetEmail } = require('../services/adminPasswordResetEmail');
 const { clearAdminSession, requireAdmin, sessionSecret, setAdminSession } = require('../middleware/adminAuth');
 
 const router = express.Router();
@@ -106,6 +107,69 @@ router.post('/login', limitAuthAttempts, async (req, res) => {
     res.json({ admin: publicAdmin(admin) });
   } catch {
     res.status(500).json({ error: 'Could not sign in.' });
+  }
+});
+
+router.post('/forgot-password', limitAuthAttempts, async (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  const genericResponse = {
+    message: 'If an admin account exists for that email, password reset instructions will be sent.'
+  };
+  const { email } = req.body;
+  if (typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) || email.length > 254) {
+    return res.status(400).json({ error: 'Enter a valid email address.' });
+  }
+
+  try {
+    const admin = await Admin.findOne({ email: email.trim().toLowerCase() });
+    if (!admin) return res.status(202).json(genericResponse);
+
+    const token = crypto.randomBytes(32).toString('hex');
+    admin.passwordResetTokenHash = crypto.createHash('sha256').update(token).digest('hex');
+    admin.passwordResetExpiresAt = new Date(Date.now() + 30 * 60 * 1000);
+    await admin.save();
+
+    try {
+      await sendPasswordResetEmail({ to: admin.email, name: admin.name, token });
+    } catch (err) {
+      await Admin.updateOne({ _id: admin._id }, {
+        $unset: { passwordResetTokenHash: 1, passwordResetExpiresAt: 1 }
+      });
+      console.error('Could not send admin password reset email:', err.message);
+    }
+    return res.status(202).json(genericResponse);
+  } catch (err) {
+    console.error('Could not process admin password reset request:', err.message);
+    return res.status(500).json({ error: 'Could not process the reset request. Please try again.' });
+  }
+});
+
+router.post('/reset-password', limitAuthAttempts, async (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  const { token, password } = req.body;
+  if (typeof token !== 'string' || !/^[a-f0-9]{64}$/i.test(token) ||
+    typeof password !== 'string' || password.length < 12 || password.length > 200) {
+    return res.status(400).json({ error: 'Use a valid reset link and a password between 12 and 200 characters.' });
+  }
+
+  try {
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+    const salt = crypto.randomBytes(16).toString('hex');
+    const passwordHash = (await scrypt(password, salt, 64)).toString('hex');
+    const admin = await Admin.findOneAndUpdate({
+      passwordResetTokenHash: tokenHash,
+      passwordResetExpiresAt: { $gt: new Date() }
+    }, {
+      $set: { passwordHash: `scrypt$${salt}$${passwordHash}` },
+      $unset: { passwordResetTokenHash: 1, passwordResetExpiresAt: 1 }
+    }, { new: true });
+
+    if (!admin) return res.status(400).json({ error: 'This reset link is invalid or has expired. Request a new one.' });
+    clearAdminSession(res);
+    res.json({ message: 'Password updated. Sign in with your new password.' });
+  } catch (err) {
+    console.error('Could not reset admin password:', err.message);
+    res.status(500).json({ error: 'Could not reset the password. Please try again.' });
   }
 });
 

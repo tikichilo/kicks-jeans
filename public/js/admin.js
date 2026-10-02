@@ -11,6 +11,9 @@ const productImageMode = document.getElementById('productImageMode');
 const productCategory = document.getElementById('productCategory');
 const loginForm = document.getElementById('adminLoginForm');
 const signupForm = document.getElementById('adminSignupForm');
+const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+const resetPasswordForm = document.getElementById('resetPasswordForm');
+const authTabs = document.querySelector('.admin-tabs');
 const ORDER_STATUSES = {
   pending_payment: 'Awaiting payment',
   processing: 'Processing',
@@ -96,6 +99,17 @@ function showDashboard(admin) {
 }
 
 async function checkSession() {
+  if (new URLSearchParams(location.hash.slice(1)).has('resetToken')) {
+    authPanel.hidden = false;
+    dashboard.hidden = true;
+    authTabs.hidden = true;
+    loginForm.hidden = true;
+    signupForm.hidden = true;
+    forgotPasswordForm.hidden = true;
+    resetPasswordForm.hidden = false;
+    return;
+  }
+
   try {
     const data = await api('/api/admin/me');
     showDashboard(data.admin);
@@ -118,6 +132,8 @@ document.querySelectorAll('[data-auth-mode]').forEach(tab => {
     });
     loginForm.hidden = signup;
     signupForm.hidden = !signup;
+    forgotPasswordForm.hidden = true;
+    resetPasswordForm.hidden = true;
     loginForm.querySelector('[data-auth-error]').hidden = true;
     signupForm.querySelector('[data-auth-error]').hidden = true;
   });
@@ -153,6 +169,69 @@ loginForm.addEventListener('submit', async event => {
     showDashboard(data.admin);
   } catch (error) {
     showAuthError(loginForm, error.message);
+  } finally {
+    submit.disabled = false;
+  }
+});
+
+document.getElementById('showForgotPassword').addEventListener('click', () => {
+  loginForm.hidden = true;
+  signupForm.hidden = true;
+  resetPasswordForm.hidden = true;
+  forgotPasswordForm.hidden = false;
+  forgotPasswordForm.querySelector('[data-auth-error]').hidden = true;
+});
+
+document.getElementById('backToLogin').addEventListener('click', () => {
+  forgotPasswordForm.hidden = true;
+  loginForm.hidden = false;
+});
+
+forgotPasswordForm.addEventListener('submit', async event => {
+  event.preventDefault();
+  const submit = forgotPasswordForm.querySelector('button[type="submit"]');
+  submit.disabled = true;
+  try {
+    const data = await api('/api/admin/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email: document.getElementById('forgotEmail').value })
+    });
+    showAuthError(forgotPasswordForm, data.message);
+    document.getElementById('forgotEmail').value = '';
+  } catch (error) {
+    showAuthError(forgotPasswordForm, error.message);
+  } finally {
+    submit.disabled = false;
+  }
+});
+
+resetPasswordForm.addEventListener('submit', async event => {
+  event.preventDefault();
+  const errorBox = resetPasswordForm.querySelector('[data-auth-error]');
+  const password = document.getElementById('resetPassword').value;
+  if (password !== document.getElementById('confirmResetPassword').value) {
+    showAuthError(resetPasswordForm, 'The passwords do not match.');
+    return;
+  }
+
+  const submit = resetPasswordForm.querySelector('button[type="submit"]');
+  submit.disabled = true;
+  try {
+    const data = await api('/api/admin/reset-password', {
+      method: 'POST',
+      body: JSON.stringify({
+        token: new URLSearchParams(location.hash.slice(1)).get('resetToken'),
+        password
+      })
+    });
+    resetPasswordForm.reset();
+    history.replaceState(null, '', location.pathname);
+    resetPasswordForm.hidden = true;
+    loginForm.hidden = false;
+    authTabs.hidden = false;
+    showAuthError(loginForm, data.message);
+  } catch (error) {
+    showAuthError(resetPasswordForm, error.message);
   } finally {
     submit.disabled = false;
   }
